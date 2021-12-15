@@ -1,0 +1,79 @@
+<project name="WxConfigLight" default="dist">
+	<!-- Load project-local.properties first, so that these properties may overwrite everything. -->
+	<property file="project-local.properties"/>
+	<!-- Factory properties, should be possible to overwrite these in project-local.properties -->
+	<property name="build.dir" location="target"/>
+	<property name="project.java.version" value="1.8"/>
+	<property name="project.version" value="1.0-SNAPSHOT"/>
+
+	<path id="wm.build.path">
+		<pathelement location="${wm.home.dir}/common/lib/wm-isclient.jar"/>
+		<pathelement location="${wm.home.dir}/IntegrationServer/lib/wm-isserver.jar"/>
+	</path>
+	<path id="wm.test.path">
+		<pathelement location="${build.dir}/packages/WxConfig/code/classes"/>
+		<fileset dir="packages/WxConfig/code/test-jars">
+			<include name="*.jar"/>
+		</fileset>
+		<path refid="wm.build.path"></path>
+	</path>
+
+	<target name="clean">
+		<delete dir="${build.dir}"></delete>
+	</target>
+
+	<target name="build-wxconfig-compile">
+		<mkdir dir="${build.dir}/packages"/>
+		<mkdir dir="${build.dir}/packages/WxConfig/code/classes"/>
+		<javac classpathref="wm.build.path" debug="true"
+			   srcdir="packages/WxConfig/code/source"
+			   includeantruntime="false" includejavaruntime="false"
+			   source="${project.java.version}" target="${project.java.version}"
+			   destdir="${build.dir}/packages/WxConfig/code/classes"/>
+	</target>
+
+	<target name="build-wxconfig-test-compile" depends="build-wxconfig-compile">
+		<mkdir dir="${build.dir}/packages"/>
+		<mkdir dir="${build.dir}/packages/WxConfig/code/test-classes"/>
+		<javac debug="true" classpathref="wm.test.path"
+			   srcdir="packages/WxConfig/code/test-source"
+			   includeantruntime="false" includejavaruntime="false"
+			   source="${project.java.version}" target="${project.java.version}"
+			   destdir="${build.dir}/packages/WxConfig/code/test-classes">
+		</javac>
+	</target>
+
+	<target name="build-wxconfig-test" depends="build-wxconfig-test-compile">
+		<mkdir dir="${build.dir}/junit-reports"/>
+		<junit fork="no" printsummary="on" haltonerror="yes" haltonfailure="yes">
+			<formatter type="plain" usefile="false"/>
+			<formatter type="xml"/>
+			<classpath>
+				<path refid="wm.test.path"/>
+				<pathelement location="${build.dir}/packages/WxConfig/code/test-classes"/>
+			</classpath>
+			<batchtest todir="${build.dir}/junit-reports">
+				<fileset dir="packages/WxConfig/code/test-source">
+					<include name="**/*Test.java"/>
+				</fileset>
+		    </batchtest>
+		</junit>
+	</target>
+
+	<target name="build-wxconfig-package" depends="build-wxconfig-test">
+		<mkdir dir="${build.dir}/dist"/>
+		<zip destfile="${build.dir}/dist/WxConfig-${project.version}.zip">
+			<fileset dir="packages/WxConfig">
+				<exclude name="code/classes"/>
+			</fileset>
+			<fileset dir="${build.dir}/packages/WxConfig"/>
+		</zip>
+		<echo>Created dist file ${build.dir}/dist/WxConfig-${project.version}.zip</echo>
+	</target>
+	
+	<target name="build" depends="build-wxconfig-package">
+	</target>
+
+	<target name="dist" depends="clean,build">
+	</target>
+</project>

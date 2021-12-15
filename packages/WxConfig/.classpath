@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="code/classes" path="code/source"/>
-	<classpathentry kind="src" path="code/source-test"/>
+	<classpathentry kind="src" output="code/test-classes" path="code/test-source"/>
 	<classpathentry kind="var" path="WEBMETHODS_HOME/common/lib/wm-isclient.jar"/>
 	<classpathentry kind="var" path="WEBMETHODS_HOME/IntegrationServer/lib/wm-isserver.jar"/>
 	<classpathentry kind="var" path="WEBMETHODS_HOME/common/lib/ext/jdom.jar"/>
-	<classpathentry kind="lib" path="code/test-jars/junit-jupiter-engine-5.8.1.jar" sourcepath="code/test-jars/junit-jupiter-engine-5.8.1-sources.zip"/>
-	<classpathentry kind="lib" path="code/test-jars/junit-jupiter-api-5.8.1.jar" sourcepath="code/test-jars/junit-jupiter-api-5.8.1-sources.zip"/>
-	<classpathentry kind="lib" path="code/test-jars/junit-platform-engine-1.8.1.jar" sourcepath="code/test-jars/junit-platform-engine-1.8.1-sources.zip"/>
-	<classpathentry kind="lib" path="code/test-jars/junit-platform-commons-1.8.1.jar" sourcepath="code/test-jars/junit-platform-commons-1.8.1-sources.zip"/>
-	<classpathentry kind="lib" path="code/test-jars/junit-platform-launcher-1.8.1.jar"/>
-	<classpathentry kind="lib" path="code/test-jars/opentest4j-1.2.0.jar" sourcepath="code/test-jars/opentest4j-1.2.0-sources.zip"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="code/test-jars/junit-4.13.2.jar" sourcepath="code/test-jars/junit-4.13.2-sources.zip"/>
+	<classpathentry kind="lib" path="code/test-jars/hamcrest-core-1.3.jar" sourcepath="code/test-jars/hamcrest-core-1.3-sources.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

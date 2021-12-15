@@ -1,0 +1,5 @@
+**/*.frag
+**/*.bak
+**/*.class
+project-local.properties
+/target/
