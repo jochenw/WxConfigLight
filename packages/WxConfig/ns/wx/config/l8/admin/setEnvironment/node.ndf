@@ -84,7 +84,13 @@ Output Parameters:
   configuration - The current WxConfigLight configuration, after updating the environment name.
 
 Exceptions: None
- </value>
+
+Notes:
+
+   This service will clear the internal cache of the package. As a consequence, all property files
+    need to be reread. This is done per package, on the fly, as soon as a property value for the
+    package is being requested.
+</value>
   <value name="stateless">yes</value>
   <value name="caching">no</value>
   <value name="prefetch">no</value>

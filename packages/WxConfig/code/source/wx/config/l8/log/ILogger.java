@@ -22,6 +22,7 @@ public interface ILogger extends Closeable {
 			}
 		}
 	}
+	public ILogger cloneMe();
 	public boolean isEnabled(Level pLevel);
 	public default boolean isTraceEnabled() { return isEnabled(Level.trace); }
 	public default boolean isDebugEnabled() { return isEnabled(Level.trace); }

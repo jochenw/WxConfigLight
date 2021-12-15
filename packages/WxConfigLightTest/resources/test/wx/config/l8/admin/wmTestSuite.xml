@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webMethodsTestSuite description="Test suite for the wx.config.l8.admin folder. " name="wx.config.l8.admin">
+    <webMethodsTestCase description="Test for the service wx.config.l8.admin:getConfiguration" name="wx.config.l8.admin.getConfiguration">
+        <service folder="wx.config.l8.test.admin" name="testGetConfiguration">
+            <input>
+                <file/>
+            </input>
+            <expected>
+                <file filename="resources/test/wx/config/l8/admin/OUT-getConfiguration.xml"/>
+            </expected>
+        </service>
+    </webMethodsTestCase>
+</webMethodsTestSuite>

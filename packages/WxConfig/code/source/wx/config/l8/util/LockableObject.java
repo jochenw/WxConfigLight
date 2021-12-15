@@ -1,10 +1,11 @@
 package wx.config.l8.util;
 
 import java.util.concurrent.locks.StampedLock;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 
-public class LockableObject<O> implements Supplier<O> {
+public class LockableObject<O> {
 	@FunctionalInterface
 	public static interface Runnable<T> {
 		public void run(T pObject) throws Exception;
@@ -54,7 +55,7 @@ public class LockableObject<O> implements Supplier<O> {
 		}
 	}
 
-	public <T> T callExlusice(Callable<T,O> pCallable) {
+	public <T> T callExlusive(Callable<T,O> pCallable) {
 		final long l = lock.writeLock();
 		try {
 			return pCallable.call(object);
@@ -76,7 +77,7 @@ public class LockableObject<O> implements Supplier<O> {
 		}
 	}
 
-	public O get() {
-		return call((o) -> o);
+	public O get(Function<O,O> pCloner) {
+		return call((o) -> pCloner.apply(o));
 	}
 }

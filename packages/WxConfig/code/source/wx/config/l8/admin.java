@@ -8,6 +8,7 @@ import com.wm.app.b2b.server.Service;
 import com.wm.app.b2b.server.ServiceException;
 // --- <<IS-START-IMPORTS>> ---
 import wx.config.l8.WxConfigL8;
+import wx.config.l8.PropertyRegistry.PkgProperties;
 import wx.config.l8.log.ILogger;
 import wx.config.l8.log.ILogger.Level;
 import java.nio.file.Path;

@@ -12,6 +12,7 @@
   </array>
   <array name="imports" type="value" depth="1">
     <value>wx.config.l8.WxConfigL8</value>
+    <value>wx.config.l8.PropertyRegistry.PkgProperties</value>
     <value>wx.config.l8.log.ILogger</value>
     <value>wx.config.l8.log.ILogger.Level</value>
     <value>java.nio.file.Path</value>

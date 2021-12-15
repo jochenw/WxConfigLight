@@ -1,18 +1,17 @@
 package wx.config.l8.log;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-
 import wx.config.l8.util.Strings;
 
 public abstract class AbstractLogger implements ILogger {
 	private final long startTime = System.currentTimeMillis();
-	private Level level;
+	private final Level level;
 
 	protected AbstractLogger(Level pLevel) {
 		level = pLevel;
+	}
+
+	public Level getLevel() {
+		return level;
 	}
 
 	protected abstract void append(String pMsg);

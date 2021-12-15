@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 public class StreamLogger extends AbstractLogger {
-	private PrintStream ps;
+	private final PrintStream ps;
 
 	public StreamLogger(Level pLevel, PrintStream pStream) {
 		super(pLevel);
@@ -14,12 +14,19 @@ public class StreamLogger extends AbstractLogger {
 	@Override
 	protected void append(String pMsg) {
 		if (ps != null) {
-			ps.print(pMsg);
+			synchronized (ps) {
+				ps.print(pMsg);
+			}
 		}
 	}
 
 	@Override
 	public void close() throws IOException {
 		ps.close();
+	}
+
+	@Override
+	public StreamLogger cloneMe() {
+		return new StreamLogger(getLevel(), ps);
 	}
 }

@@ -56,4 +56,11 @@ public class NullLogger implements ILogger {
 		// Do nothing
 	}
 
+
+	@Override
+	public ILogger cloneMe() {
+		// This object is completely stateless, so we may return it as the clone.
+		return this;
+	}
+
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<IDataXMLCoder version="1.0">
+  <record javaclass="com.wm.data.ISMemDataImpl">
+    <record name="configuration" javaclass="com.wm.data.ISMemDataImpl">
+      <value name="logFile">logs/packages/WxConfigL8.log</value>
+      <array name="configFiles" type="value" depth="1">
+        <value>config/packages/[PKG_NAME][ENV].cnf</value>
+        <value>packages/[PKG_NAME]/wxconfig[ENV].cnf</value>
+      </array>
+    </record>
+  </record>
+</IDataXMLCoder>

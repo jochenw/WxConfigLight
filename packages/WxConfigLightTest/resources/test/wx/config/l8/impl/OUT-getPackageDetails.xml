@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<IDataXMLCoder version="1.0">
+  <record javaclass="com.wm.util.Values">
+    <value name="packageName">WxConfigLightTest</value>
+    <array name="configFileCandidates" type="record" depth="1">
+      <record javaclass="com.wm.data.ISMemDataImpl">
+        <value name="path">config/packages/WxConfigLightTest.cnf</value>
+        <value name="exists">false</value>
+      </record>
+      <record javaclass="com.wm.data.ISMemDataImpl">
+        <value name="path">packages/WxConfigLightTest/wxconfig.cnf</value>
+        <value name="exists">false</value>
+      </record>
+    </array>
+  </record>
+</IDataXMLCoder>

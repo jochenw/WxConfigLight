@@ -11,25 +11,24 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import com.softwareag.util.IDataMap;
 import com.wm.data.IData;
 
+import wx.config.l8.PropertyRegistry.PkgProperties;
 import wx.config.l8.log.ILogger;
 import wx.config.l8.log.StreamLogger;
 import wx.config.l8.log.ILogger.Level;
 import wx.config.l8.log.NullLogger;
 import wx.config.l8.util.Exceptions;
 import wx.config.l8.util.LockableObject;
+import wx.config.l8.util.Mutable.MString;
 
 
 public class WxConfigL8 {
-	private static WxConfigL8 instance;
+	private static WxConfigL8 instance = new WxConfigL8();
 
 	public static WxConfigL8 getInstance() {
 		synchronized (WxConfigL8.class) {
@@ -43,7 +42,7 @@ public class WxConfigL8 {
 		}
 	}
 
-	private final Map<String,PackageProperties> properties = Collections.synchronizedMap(new HashMap<>());
+	private final PropertyRegistry propertyRegistry = new PropertyRegistry();
 	private final LockableObject<L8Configuration> config;
 	private final LockableObject<ILogger> logger;
 
@@ -62,11 +61,11 @@ public class WxConfigL8 {
 	}
 
 	public ILogger getLogger() {
-		return logger.get();
+		return logger.get((o) -> o);
 	}
 	
 	public void clear() {
-		properties.clear();
+		propertyRegistry.clear();
 	}
 	
 	protected void saveConfiguration() {
@@ -191,7 +190,7 @@ public class WxConfigL8 {
 		});
 	}
 	protected String getDefaultConfigFile() {
-		return "./packages/[PKG_NAME]/WxConfigL8[ENV].properties";
+		return "packages/[PKG_NAME]/wxconfig[ENV].cnf";
 	}
 
 	protected Path getSavedPropertiesPath() {
@@ -202,16 +201,38 @@ public class WxConfigL8 {
 		return Paths.get("packages/WxConfig/config/WxConfigL8.properties");
 	}
 
-	public PackageProperties getPackageProperties(String pPackageName) {
-		PackageProperties cp = properties.get(pPackageName);
-		if (cp == null) {
-			cp = findProperties(pPackageName);
-			properties.put(pPackageName, cp);
-		}
-		return cp;
+	public PropertyRegistry getPropertyRegistry() {
+		return propertyRegistry;
 	}
 
-	protected PackageProperties findProperties(String pPackageName) {
+	public List<String> getConfigFileInfo(String pPackageName) {
+		System.out.println("getConfigFileInfo: -> " + pPackageName);
+		final List<String> files = new ArrayList<String>();
+		final MString menv = new MString();
+		final List<String> configFiles = config.call((cfg) -> {
+			final List<String> list = new ArrayList<>();
+			list.addAll(cfg.getPropertyFiles());
+			menv.set(cfg.getEnvironment());
+			return list;
+		});
+		final String env = menv.get();
+		System.out.println("getConfigFileInfo: env=" + env + ", configFiles=" + String.join(", ", configFiles));
+		for (String s : configFiles) {
+			final String cf = s.replace("[PKG_NAME]", pPackageName);
+			if (cf.contains("[ENV]")) {
+				if (env != null  &&  env.length() > 0) {
+					files.add(cf.replace("[ENV]", "-" + env));
+				}
+				files.add(cf.replace("[ENV]", ""));
+			} else {
+				files.add(cf);
+			}
+		}
+		System.out.println("getConfigFileInfo: <- " + String.join(", ", files));
+		return files;
+	}
+
+	protected PkgProperties findProperties(String pPackageName) {
 		final List<String> configFiles = config.call((cfg) -> {
 			final List<String> list = new ArrayList<>();
 			list.addAll(cfg.getPropertyFiles());
@@ -222,19 +243,18 @@ public class WxConfigL8 {
 		});
 		if (env == null) {
 			final Properties props = findProperties(configFiles, "[PKG_NAME]", pPackageName, "[ENV]", "");
-			return new PackageProperties(props);
+			return new PkgProperties(props);
 		} else {
 			Properties props = findProperties(configFiles, "[PKG_NAME]", pPackageName, "[ENV]",
 					                          "-" + env);
 			if (props == null) {
 				props = findProperties(configFiles, "[PKG_NAME]", pPackageName, "[ENV]", "");
 			}
-			return new PackageProperties(props);
+			return new PkgProperties(props);
 		}
 	}
 
 	Properties findProperties(List<String> pCandidates, String... pInterpolations) {
-		System.out.println("findProperties: " + String.join(", ", pCandidates)); 
 		Properties props = null;
 		for (String candidate : pCandidates) {
 			String file = candidate;
@@ -272,7 +292,6 @@ public class WxConfigL8 {
 				props.putAll(pr);
 			}
 		}
-		System.out.println("findProperties: <- " + props);
 		return props;
 	}
 
@@ -295,7 +314,7 @@ public class WxConfigL8 {
 	}
 
 	public void setLogFile(Level pLevel, Path pPath) {
-		final ILogger oldLogger = logger.get();
+		final ILogger oldLogger = logger.get((o) -> o);
 		final ILogger newLogger = asLogger(pLevel, pPath);
 		try {
 			oldLogger.close();
@@ -330,5 +349,19 @@ public class WxConfigL8 {
 			cfg.setPropertyFiles(list);
 		});
 		clear();
+	}
+
+	public PkgProperties getPkgProperties(String pPackageName) {
+		PkgProperties pkgProperties = propertyRegistry.getPkgProperties(pPackageName);
+		if (pkgProperties == null) {
+			pkgProperties = findProperties(pPackageName);
+			propertyRegistry.setPkgProperties(pPackageName, pkgProperties);
+		}
+		return pkgProperties;
+	}
+
+	public void refreshPkgProperties(String pPackageName) {
+		PkgProperties pkgProperties = findProperties(pPackageName);
+		propertyRegistry.setPkgProperties(pPackageName, pkgProperties);
 	}
 }
